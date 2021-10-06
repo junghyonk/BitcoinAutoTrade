@@ -8,8 +8,8 @@ import time
 import pyupbit
 import datetime
 
-access = "MfB3H34tSzDNxOt46noZEn0vIgbNxXntHGeeKN2b"
-secret = "BFXSwrwjCtIicMof5yxfWxF8mIaoLNxTxuBHeGj9"
+access = //API 입력
+secret = //API 입력
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
