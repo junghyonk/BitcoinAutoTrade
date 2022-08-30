@@ -51,15 +51,15 @@ while True:
                 print(i)
                 print("Current",get_current_price(i))
                 print("Buy:",target_price)
-                print("Sell",get_target_price(i,0.65)*1.0085)
+                print("Sell",get_target_price(i,0.7)*1.0085)
                 flag=True
                 if start_time < datetime.datetime.now() < end_time - datetime.timedelta(seconds=10):   
-                    if target_price <= get_current_price(i)<=get_target_price(i,0.65)*1.001:
+                    if target_price <= get_current_price(i)<=get_target_price(i,0.7)*1.001:
                         krw = get_balance("KRW")
                         if krw > 5000:
                             upbit.buy_market_order(i, krw*0.9995)
                             while flag:
-                                if get_current_price(i)>=get_target_price(i,0.65)*1.0085:
+                                if get_current_price(i)>=get_target_price(i,0.7)*1.0085:
                                     str=i.replace('KRW-','')
                                     btc = get_balance(str)
                                     if btc > 0.00008:
