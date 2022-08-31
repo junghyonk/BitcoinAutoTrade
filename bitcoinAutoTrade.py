@@ -4,6 +4,7 @@ import datetime
 import math
 access = "4uavNjAXPvguNslxMqkWajloFjRVvrPABil8IkDe"
 secret = "143pCMWTxK3fpZoEGViwix9Em6H1KRyZj2NGeTXb"
+upbit_Token = pyupbit.Upbit(access, secret)
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -56,14 +57,14 @@ while True:
                 continue
             if start_time < now < end_time - datetime.timedelta(seconds=10):
                 if target_price <= get_current_price(coin):
-                    krw = get_balance("KRW")
+                    krw = upbit_Token.get_balance("KRW") 
                     if krw > 5000:
                         upbit.buy_market_order(coin, krw*0.9995)
                         flag=True
                         while flag:
                             if get_current_price(coin)>=round(get_target_price(coin,0.15)*1.0080,2):
                                 str=coin.replace('KRW-','')
-                                btc = get_balance(str)
+                                btc = upbit_Token.get_balance(str) 
                                 if btc > 0.00008:
                                     upbit.sell_market_order(coin, btc*0.9995)
                                     time.sleep(math.trunc((end_time-now).total_seconds())+5)
