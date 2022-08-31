@@ -38,26 +38,27 @@ print("autotrade start")
 
 # 자동매매 시작
 while True:
-    for i in pyupbit.get_tickers(fiat="KRW"): 
-        coin=i
+    list =[]
+    list=pyupbit.get_tickers(fiat="KRW")
+    for i in list: 
         try:
+            coin=i
             now = datetime.datetime.now()
             start_time = get_start_time(coin)
             end_time = start_time + datetime.timedelta(days=1)
             target_price = get_target_price(coin,0.15)
             current_price = get_current_price(coin)
-            time.sleep(0.3)
+            print(coin)
+            print("Current",get_current_price(coin))
+            print("Buy:",target_price)
+            print("Sell",round(get_target_price(coin,0.15)*1.0080,2))            
             if coin=="KRW-BTT":
                 continue
             if start_time < now < end_time - datetime.timedelta(seconds=10):
                 if target_price <= get_current_price(coin):
                     krw = get_balance("KRW")
                     if krw > 5000:
-                        print(coin)
-                        print("Current",get_current_price(coin))
-                        print("Buy:",target_price)
-                        print("Sell",round(get_target_price(coin,0.15)*1.0080,2))
-                        #upbit.buy_market_order(coin, krw*0.9995)
+                        upbit.buy_market_order(coin, krw*0.9995)
                         flag=True
                         while flag:
                             if get_current_price(coin)>=round(get_target_price(coin,0.15)*1.0080,2):
