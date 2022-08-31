@@ -47,24 +47,25 @@ while True:
             now = datetime.datetime.now()
             start_time = get_start_time(coin)
             end_time = start_time + datetime.timedelta(days=1)
-            target_price = get_target_price(coin,0.15)
+            target_price = get_target_price(coin,0.01)
             current_price = get_current_price(coin)
             print(coin)
             print("Current",get_current_price(coin))
             print("Buy:",target_price)
-            print("Sell",round(get_target_price(coin,0.15)*1.0080,2))            
+            print("Sell",round(get_target_price(coin,0.01)*1.0080,2))            
             if coin=="KRW-BTT":
                 continue
             if start_time < now < end_time - datetime.timedelta(seconds=10):
                 if target_price <= get_current_price(coin):
-                    krw = upbit_Token.get_balance("KRW") 
+                    krw = round(upbit.get_balance("KRW"))
                     if krw > 5000:
                         upbit.buy_market_order(coin, krw*0.9995)
+                        time.sleep(10)
                         flag=True
                         while flag:
-                            if get_current_price(coin)>=round(get_target_price(coin,0.15)*1.0080,2):
+                            if get_current_price(coin)>=round(get_target_price(coin,0.01)*1.0080,2):
                                 str=coin.replace('KRW-','')
-                                btc = upbit_Token.get_balance(str) 
+                                btc = upbit.get_balance(str)
                                 if btc > 0.00008:
                                     upbit.sell_market_order(coin, btc*0.9995)
                                     time.sleep(math.trunc((end_time-now).total_seconds())+5)
