@@ -43,13 +43,8 @@ while True:
             now = datetime.datetime.now()
             start_time = get_start_time(i)
             end_time = start_time + datetime.timedelta(days=1)
-<<<<<<< HEAD
             target_price = get_target_price(i,0.15)
           
-=======
-            target_price = get_target_price(i,0.17)
-            #if i=="KRW-ETC" or i=="KRW-EOS" or i=="KRW-XRP" or i=="KRW-CHZ" or i=="KRW-WAVES" or i=="KRW-SOL"  or i=="KRW-ZIL" or i=="KRW-DOGE" or i=="KRW-TFUEL" or i=="KRW-LOOM" or i=="KRW-SOL" or i=="KRW-SAND"  or i=="KRW-KNC" or i=="KRW-AXS":      
->>>>>>> 17be7dab6c88ab309d49caea2eb64dce75a8ba6c
             if i=="KRW-BTT":
                 continue
             else:
