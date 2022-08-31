@@ -2,8 +2,8 @@ import time
 import pyupbit
 import datetime
 import math
-access = "4uavNjAXPvguNslxMqkWajloFjRVvrPABil8IDe"
-secret = "143pCMWTxK3fpZoEGViwix9Em6H1KRyZj2NGeTb"
+access = "4uavNjAXPvguNslxMqkWajloFjRVvrPABil8IkDe"
+secret = "143pCMWTxK3fpZoEGViwix9Em6H1KRyZj2NGeTXb"
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -44,24 +44,19 @@ while True:
             start_time = get_start_time(i)
             end_time = start_time + datetime.timedelta(days=1)
             target_price = get_target_price(i,0.15)
-            #if i=="KRW-ETC" or i=="KRW-EOS" or i=="KRW-XRP" or i=="KRW-CHZ" or i=="KRW-WAVES" or i=="KRW-SOL"  or i=="KRW-ZIL" or i=="KRW-DOGE" or i=="KRW-TFUEL" or i=="KRW-LOOM" or i=="KRW-SOL" or i=="KRW-SAND"  or i=="KRW-KNC" or i=="KRW-AXS":      
+          
             if i=="KRW-BTT":
                 continue
             else:
                 print(i)
-                print("Current",get_current_price(i))
-                print("Buy:",target_price)
-                print("Sell",round(get_target_price(i,0.17)*1.0080,2))
                 flag=True
                 if start_time < datetime.datetime.now() < end_time - datetime.timedelta(seconds=10):   
-                    if target_price <= get_current_price(i)<=get_target_price(i,0.17)*1.001:
+                    if target_price <= get_current_price(i)<=get_target_price(i,0.15)*1.001:
                         krw = get_balance("KRW")
-                        time.sleep(5)
                         if krw > 5000:
-                            time.sleep(10000)
-                            #upbit.buy_market_order(i, krw*0.9995)
+                            upbit.buy_market_order(i, krw*0.9995)
                             while flag:
-                                if get_current_price(i)>=round(get_target_price(i,0.17)*1.0080,2):
+                                if get_current_price(i)>=round(get_target_price(i,0.15)*1.0080,2):
                                     str=i.replace('KRW-','')
                                     btc = get_balance(str)
                                     if btc > 0.00008:
