@@ -38,24 +38,24 @@ print("autotrade start")
 
 # 자동매매 시작
 while True:
-    for i in pyupbit.get_tickers(fiat="KRW"): 
+    for i in pyupbit.get_tickers(fiat="KRW"):
         try:
             now = datetime.datetime.now()
             start_time = get_start_time(i)
             end_time = start_time + datetime.timedelta(days=1)
-            target_price = get_target_price(i, 0.15)
-            current_price = get_current_price(i)
-            print(i)
-            print("Current",get_current_price(i))
-            print("Buy:",target_price)
-            print("Sell",round(get_target_price(i,0.15)*1.0080,2))
-            if start_time < now < end_time - datetime.timedelta(seconds=10):
-                if target_price <= get_current_price(i) <=get_target_price(i,0.15)*1.001 and i!="KRW-BTT":
-                    krw = get_balance("KRW")
-                    if krw > 5000:
-                        upbit.buy_market_order(i, krw*0.9995)
-                        flag=True
-                        while flag:
+            target_price = get_target_price(i,0.15)
+          
+            if i=="KRW-BTT":
+                continue
+            else:
+                print(i)
+                flag=True
+                if start_time < datetime.datetime.now() < end_time - datetime.timedelta(seconds=10):   
+                    if target_price <= get_current_price(i)<=get_target_price(i,0.15)*1.001:
+                        krw = get_balance("KRW")
+                        if krw > 5000:
+                            upbit.buy_market_order(i, krw*0.9995)
+                            while flag:
                                 if get_current_price(i)>=round(get_target_price(i,0.15)*1.0080,2):
                                     str=i.replace('KRW-','')
                                     btc = get_balance(str)
@@ -67,6 +67,8 @@ while True:
                                 if datetime.datetime.now() == end_time- datetime.timedelta(seconds=1):
                                     flag=False
                                 time.sleep(1)
+                time.sleep(0.2)
+             
         except Exception as e:
             print(e)
-            time.sleep(1)
+                  
