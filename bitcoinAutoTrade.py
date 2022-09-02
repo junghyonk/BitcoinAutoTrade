@@ -4,8 +4,7 @@ import datetime
 import math
 access = "4uavNjAXPvguNslxMqkWajloFjRVvrPABil8IkDe"
 secret = "143pCMWTxK3fpZoEGViwix9Em6H1KRyZj2NGeTXb"
-upbit_Token = pyupbit.Upbit(access, secret)
-
+upbit = pyupbit.Upbit(access, secret)
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
@@ -39,42 +38,41 @@ print("autotrade start")
 
 # 자동매매 시작
 while True:
-    list =[]
-    list=pyupbit.get_tickers(fiat="KRW")
-    for i in list: 
+    for i in pyupbit.get_tickers(fiat="KRW"):
         try:
-            coin=i
             now = datetime.datetime.now()
-            start_time = get_start_time(coin)
+            start_time = get_start_time(i)
             end_time = start_time + datetime.timedelta(days=1)
-            target_price = get_target_price(coin,0.01)
-            current_price = get_current_price(coin)
-            print(coin)
-            print("Current",get_current_price(coin))
-            print("Buy:",target_price)
-            print("Sell",round(get_target_price(coin,0.01)*1.0080,2))            
-            if coin=="KRW-BTT":
+            target_price = get_target_price(i,0.001)
+            #if i=="KRW-ETC" or i=="KRW-EOS" or i=="KRW-XRP" or i=="KRW-CHZ" or i=="KRW-WAVES" or i=="KRW-SOL"  or i=="KRW-ZIL" or i=="KRW-DOGE" or i=="KRW-TFUEL" or i=="KRW-LOOM" or i=="KRW-SOL" or i=="KRW-SAND"  or i=="KRW-KNC" or i=="KRW-AXS":      
+            if i=="KRW-BTT":
                 continue
-            if start_time < now < end_time - datetime.timedelta(seconds=10):
-                if target_price <= get_current_price(coin):
-                    krw = round(upbit.get_balance("KRW"))
-                    if krw > 5000:
-                        upbit.buy_market_order(coin, krw*0.9995)
-                        time.sleep(10)
-                        flag=True
-                        while flag:
-                            if get_current_price(coin)>=round(get_target_price(coin,0.01)*1.0080,2):
-                                str=coin.replace('KRW-','')
-                                btc = upbit.get_balance(str)
-                                if btc > 0.00008:
-                                    upbit.sell_market_order(coin, btc*0.9995)
-                                    time.sleep(math.trunc((end_time-now).total_seconds())+5)
-                                    print("sleep")
+            else:
+                print(i)
+                print("Current",get_current_price(i))
+                print("Buy:",target_price)
+                print("Sell",round(get_target_price(i,0.001)*1.0080,2))
+                
+                if start_time < datetime.datetime.now() < end_time - datetime.timedelta(seconds=10):   
+                    if target_price <= get_current_price(i):
+                        krw = upbit.get_balance("KRW")
+                        if krw > 5000:
+                            upbit.buy_market_order(i, krw*0.9995)
+                            flag=True
+                            while flag:
+                                if get_current_price(i)>=round(get_target_price(i,0.15)*1.0080,2):
+                                    str=i.replace('KRW-','')
+                                    btc = upbit.get_balance(str)
+                                    if btc > 0.00008:
+                                        upbit.sell_market_order(i, btc*0.9995)
+                                        time.sleep(math.trunc((end_time-now).total_seconds())+5)
+                                        print("sleep")
+                                        flag=False
+                                if datetime.datetime.now() == end_time-datetime.timedelta(seconds=2):
                                     flag=False
-                                if datetime.datetime.now() == end_time- datetime.timedelta(seconds=1):
-                                    flag=False
-                                    time.sleep(1)
-            time.sleep(1)
+                                    time.sleep(2)
+                time.sleep(0.2)
+             
         except Exception as e:
             print(e)
-            time.sleep(1)
+                  
