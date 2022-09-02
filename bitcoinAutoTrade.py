@@ -4,7 +4,7 @@ import datetime
 import math
 access = "4uavNjAXPvguNslxMqkWajloFjRVvrPABil8IkDe"
 secret = "143pCMWTxK3fpZoEGViwix9Em6H1KRyZj2NGeTXb"
-upbit = pyupbit.Upbit(access, secret)
+
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
@@ -43,35 +43,35 @@ while True:
             now = datetime.datetime.now()
             start_time = get_start_time(i)
             end_time = start_time + datetime.timedelta(days=1)
-            target_price = get_target_price(i,0.001)
+            target_price = get_target_price(i,0.15)
             #if i=="KRW-ETC" or i=="KRW-EOS" or i=="KRW-XRP" or i=="KRW-CHZ" or i=="KRW-WAVES" or i=="KRW-SOL"  or i=="KRW-ZIL" or i=="KRW-DOGE" or i=="KRW-TFUEL" or i=="KRW-LOOM" or i=="KRW-SOL" or i=="KRW-SAND"  or i=="KRW-KNC" or i=="KRW-AXS":      
-            if i=="KRW-BTT":
+            if i=="KRW-BTT" or i=="KRW-ADA":
                 continue
             else:
-                print(i)
-                print("Current",get_current_price(i))
-                print("Buy:",target_price)
-                print("Sell",round(get_target_price(i,0.001)*1.0080,2))
-                
+                flag=True
                 if start_time < datetime.datetime.now() < end_time - datetime.timedelta(seconds=10):   
-                    if target_price <= get_current_price(i):
-                        krw = upbit.get_balance("KRW")
+                    if target_price <= get_current_price(i)<=get_target_price(i,0.15)*1.01:
+                        krw = get_balance("KRW")
                         if krw > 5000:
                             upbit.buy_market_order(i, krw*0.9995)
-                            flag=True
+                            buyprice=get_current_price(i)
                             while flag:
-                                if get_current_price(i)>=round(get_target_price(i,0.15)*1.0080,2):
+                                #print("Tarr-price: ",get_target_price(i,0.15))
+                                #print("Curr-price: ",get_current_price(i))
+                                #print("Sell-price: ",round(buyprice*1.0085,2))
+                                if get_current_price(i)>=round(buyprice*1.0085,2):
                                     str=i.replace('KRW-','')
-                                    btc = upbit.get_balance(str)
+                                    btc = get_balance(str)
                                     if btc > 0.00008:
                                         upbit.sell_market_order(i, btc*0.9995)
                                         time.sleep(math.trunc((end_time-now).total_seconds())+5)
-                                        print("sleep")
+                                        #print("sleep") 
                                         flag=False
-                                if datetime.datetime.now() == end_time-datetime.timedelta(seconds=2):
+                                if datetime.datetime.now() == end_time- datetime.timedelta(seconds=2):
                                     flag=False
                                     time.sleep(2)
-                time.sleep(0.2)
+                                time.sleep(0.3)
+                time.sleep(0.1)
              
         except Exception as e:
             print(e)
